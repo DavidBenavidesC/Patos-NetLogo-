@@ -1,0 +1,57 @@
+
+
+
+to setup
+  clear-all
+  resize-world 0 50 0 50
+  set-patch-size 10
+  
+  ; Cuadrado superior izquierda (rojo)
+  ask patches with [pxcor <= 1 and pycor >= max-pycor - 1]
+  [ set pcolor red ]
+  
+  ; Cuadrado inferior derecha (azul)
+  ask patches with [pxcor >= max-pxcor - 1 and pycor <= 1]
+  [ set pcolor blue ]
+  
+  spawn-pato-amarillo
+  reset-ticks
+end
+
+
+to spawn-pato-amarillo
+  ; Crea un pato en el centro del cuadrado rojo
+  create-turtles 1 [
+    setxy 0.5 (max-pycor - 0.5) ; Posición central del cuadrado rojo
+    set color yellow ; Color amarillo del pato
+    set shape "turtle" ; Forma de tortuga
+    set size 2 ; Tamaño del pato
+    set heading 270 ; Orientación del pato
+  ]
+end
+
+
+to go
+  ; Mueve el pato aleatoriamente
+  ask turtles [
+    rt random 360 ; Gira el pato aleatoriamente
+    fd 1 ; Avanza el pato
+    
+    ; Dibuja un rastro amarillo
+    set pen-mode "down"
+    set color yellow
+    set pen-size 0.5
+    
+    ; Cambia el color del cuadrado azul a verde
+    if [pcolor] of patch-here = blue [
+      ask patch-here [set pcolor green]
+      die
+    ]
+  ]
+  
+  if not any? turtles [
+    stop
+  ]
+  
+  tick ; Incrementa el contador de ticks
+end
